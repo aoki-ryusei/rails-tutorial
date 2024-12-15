@@ -13,6 +13,14 @@ RUN bundle install
 # アプリケーションコードをコピー
 COPY ../src src
 
+# windowsとの権限を合わせるためにユーザーを追加
+ARG USERNAME=winuser
+ARG GROUPNAME=wingroup
+ARG UID=1000
+ARG GID=1000
+RUN groupadd -g $GID $GROUPNAME && \
+    useradd -m -s /bin/bash -u $UID -g $GID $USERNAME
+
 # コンテナ起動時に実行させる entrypoint.sh を追加
 COPY entrypoint.sh /usr/bin/
 RUN chmod +x /usr/bin/entrypoint.sh
