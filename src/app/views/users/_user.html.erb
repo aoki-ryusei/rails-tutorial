@@ -9,14 +9,4 @@
     <%= user.email %>
   </p>
 
-  <p><strong>microposts</strong></p>
-  <div>
-    <% @user.microposts.each.with_index do |micropost, index| %>
-    <p>
-      <strong>No <%= index + 1 %>:</strong>
-      <%= micropost.content %>
-    </p>
-    <% end %>
-  </div>
-
 </div>
