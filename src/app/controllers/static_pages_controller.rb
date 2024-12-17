@@ -1,13 +1,13 @@
 class StaticPagesController < ApplicationController
   def home
-    @title = "Home"
+    @title = __method__.capitalize
   end
 
   def help
-    @title = "Help"
+    @title = __method__.capitalize
   end
 
   def about
-    @title = "About"
+    @title = __method__.capitalize
   end
 end
