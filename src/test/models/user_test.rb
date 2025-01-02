@@ -1,8 +1,8 @@
 require "test_helper"
 
 class UserTest < ActiveSupport::TestCase
-  
-  def setup 
+
+  def setup
     @user = User.new(name: "Example User", email: "user@example.com",
                     password: "foobar", password_confirmation: "foobar")
   end
@@ -61,5 +61,21 @@ class UserTest < ActiveSupport::TestCase
   test "password should have a minimum length" do
     @user.password = @user.password_confirmation = "a" * 5
     assert_not @user.valid?
+  end
+
+  test "authenticated? should return false for a user with nil digest" do
+    assert_not @user.authenticated?('')
+  end
+
+  test "remember_digestが保存されること" do
+    assert @user.remember_digest.nil?
+    @user.remember()
+    assert_not @user.remember_digest.nil?
+  end
+
+  test "remember_digestが削除されていること" do
+    @user.remember()
+    @user.forget()
+    assert_equal @user.remember_digest, nil
   end
 end
