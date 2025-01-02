@@ -1,0 +1,13 @@
+{
+  "recommendations": [
+    // AI
+    "codeium.codeium",
+    // git
+    "eamodio.gitlens",
+    "github.vscode-pull-request-github",
+    "github.vscode-github-actions",
+    "mhutchie.git-graph",
+    "ms-ceintl.vscode-language-pack-ja",
+    "cweijan.vscode-mysql-client2"
+  ]
+}
