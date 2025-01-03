@@ -1,8 +1,15 @@
 class UsersController < ApplicationController
+  before_action :logged_in_user, only: [:index, :edit, :update]
+  before_action :correct_user,   only: [:edit, :update]
+
+  def index
+    @users = User.all
+  end
+
   def show
     @user = User.find(params[:id])
   end
-  
+
   def new
     @user = User.new
   end
@@ -19,6 +26,20 @@ class UsersController < ApplicationController
     end
   end
 
+  def edit
+    @user = User.find(params[:id])
+  end
+
+  def update
+    @user = User.find(params[:id])
+    if @user.update(user_params)
+      flash[:success] = "Profile updated"
+      redirect_to @user
+    else
+      render 'edit', status: :unprocessable_entity
+    end
+  end
+
   private
 
     def user_params
@@ -26,5 +47,20 @@ class UsersController < ApplicationController
                                     :password_confirmation)
     end
 
+    # ログイン済みのユーザーかチェックを行う
+    def logged_in_user
+      unless logged_in?
+        store_location
+        flash[:danger] = "ログインしてください"
+        redirect_to login_url, status: :see_other
+      end
+    end
+
+    # 正しいユーザーかどうかを確認する
+    def correct_user
+      @user = User.find(params[:id])
+      # ログイン中のユーザーと比べる
+      redirect_to(root_url, status: :see_other) unless current_user?(@user)
+    end
 
 end
