@@ -11,6 +11,7 @@
     "jbuilder",
     "microposts",
     "nonblank",
+    "noopener",
     "sassc",
     "signup",
     "solargraph",

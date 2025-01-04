@@ -8,6 +8,11 @@ module SessionsHelper
     session[:session_token] = user.session_token
   end
 
+  # ユーザーがログインしていればtrue、その他ならfalseを返す
+  def logged_in?
+    !current_user.nil?
+  end
+
   # 永続的セッションを記憶する
   def remember(user)
     user.remember
@@ -32,9 +37,9 @@ module SessionsHelper
     end
   end
 
-  # ユーザーがログインしていればtrue、その他ならfalseを返す
-  def logged_in?
-    !current_user.nil?
+  # 渡されたユーザーがカレントユーザーであればtrueを返す
+  def current_user?(user)
+    user && user == current_user
   end
 
   # 永続的セッションを破棄する
@@ -49,5 +54,10 @@ module SessionsHelper
     forget current_user
     reset_session
     @current_user = nil   # 安全のため
+  end
+
+  # アクセスしようとしたURLを保存する
+  def store_location
+    session[:forwarding_url] = request.original_url if request.get?
   end
 end

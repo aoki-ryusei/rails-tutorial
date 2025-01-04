@@ -9,8 +9,10 @@ class User < ApplicationRecord
     length: { maximum: 255 },
     format: { with: VALID_EMAIL_REGEX },
     uniqueness: true
+  # 存在チェックも行っている
   has_secure_password
-  validates :password, presence: true, length: { minimum: 6 }
+  # nilを許容する
+  validates :password, presence: true, length: { minimum: 6 }, allow_nil: true
 
   # 永続的セッションのためにユーザーをデータベースに記憶する
   def remember
