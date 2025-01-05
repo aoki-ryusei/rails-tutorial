@@ -1,7 +1,8 @@
 class User < ApplicationRecord
   # インスタンス変数を定義
-  attr_accessor :remember_token
-  before_save { email.downcase! }
+  attr_accessor :remember_token, :activation_token
+  before_save   :downcase_email
+  before_create :create_activation_digest
   validates :name, presence: true, length: { maximum: 50 }
   VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-]+(\.[a-z\d\-]+)*\.[a-z]+\z/i
   validates :email,
@@ -29,15 +30,31 @@ class User < ApplicationRecord
   end
 
   # 渡されたトークンがダイジェストと一致したらtrueを返す
-  def authenticated?(remember_token)
-    return false if remember_digest.nil?
+  # @param String attribute remember_digest or activation_digest
+  # @param String token
+  # @return boolean
+  def authenticated?(attribute, token)
+    digest = send("#{attribute}_digest")
+    return false if digest.nil?
     # DBに保存されているdigestとtokenを比較
-    BCrypt::Password.new(remember_digest).is_password?(remember_token)
+    BCrypt::Password.new(digest).is_password?(token)
   end
 
   # ユーザーのログイン情報を破棄する
   def forget
     update_attribute(:remember_digest, nil)
+  end
+
+  # アカウントを有効化する
+  def activate
+    # update_attribute(:activated, true)
+    # update_attribute(:activated_at, Time.zone.now)
+    update_columns(activated: true, activated_at: Time.zone.now)
+  end
+
+  # 有効化用のメールを送信する
+  def send_activation_email
+    UserMailer.account_activation(self).deliver_now
   end
 
   # クラスメソッド
@@ -54,5 +71,20 @@ class User < ApplicationRecord
       #  A–Z、a–z、0–9、"-"、"_"のいずれかの文字（26×2+10+1+1=64種類）からなる長さ22のランダムな文字列を返す
       SecureRandom.urlsafe_base64
     end
+
+    def create_activation_digest
+      # 有効化トークンとダイジェストを作成および代入する
+    end
   end
+
+  private
+    def downcase_email
+      self.email.downcase!
+    end
+
+    # 有効化トークンとダイジェストを作成および代入する
+    def create_activation_digest
+      self.activation_token  = User.new_token
+      self.activation_digest = User.digest(activation_token)
+    end
 end

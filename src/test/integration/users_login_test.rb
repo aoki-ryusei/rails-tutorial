@@ -9,12 +9,12 @@ end
 
 class InvalidPasswordTest < UsersLogin
 
-  test "login path" do
+  test "ログイン画面に遷移する試験" do
     get login_path
     assert_template 'sessions/new'
   end
 
-  test "login with valid email/invalid password" do
+  test "不正なパスワードでログインした際の試験" do
     post login_path, params: { session: { email:    @user.email,
                                           password: "invalid" } }
     assert_not is_logged_in?
@@ -27,6 +27,7 @@ end
 
 class ValidLogin < UsersLogin
 
+  # 正常なログイン情報を持つユーザーを作成する
   def setup
     super
     post login_path, params: { session: { email:    @user.email,
@@ -36,12 +37,12 @@ end
 
 class ValidLoginTest < ValidLogin
 
-  test "valid login" do
+  test "ログイン処理_正常" do
     assert is_logged_in?
     assert_redirected_to @user
   end
 
-  test "redirect after login" do
+  test "ログイン後にリダイレクト" do
     follow_redirect!
     assert_template 'users/show'
     assert_select "a[href=?]", login_path, count: 0

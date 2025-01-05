@@ -9,6 +9,7 @@ Rails.application.routes.draw do
   get    "/contact", to: "static_pages#contact"
   resources :microposts
   resources :users
+  resources :account_activations, only: [:edit]
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Defines the root path route ("/")
