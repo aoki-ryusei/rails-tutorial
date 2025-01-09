@@ -78,4 +78,12 @@ class UserTest < ActiveSupport::TestCase
     @user.forget()
     assert_equal @user.remember_digest, nil
   end
+
+  test "関連されたmicropostsが削除されること" do
+    @user.save
+    @user.microposts.create!(content: "Lorem ipsum")
+    assert_difference 'Micropost.count', -1 do
+      @user.destroy
+    end
+  end
 end
