@@ -9,6 +9,7 @@
     "completor",
     "importmap",
     "jbuilder",
+    "Micropost",
     "microposts",
     "nonblank",
     "noopener",
