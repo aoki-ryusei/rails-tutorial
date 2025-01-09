@@ -9,6 +9,7 @@ class MicropostsController < ApplicationController
       redirect_to root_url
     else
       @feed_items = current_user.feed.paginate(page: params[:page])
+      @micropost.image.attach(params[:micropost][:image])
       render 'static_pages/home', status: :unprocessable_entity
     end
   end
@@ -25,7 +26,7 @@ class MicropostsController < ApplicationController
 
   private
     def micropost_params
-      params.require(:micropost).permit(:content)
+      params.require(:micropost).permit(:content, :image)
     end
 
     def correct_user
